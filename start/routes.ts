@@ -20,6 +20,10 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
+Route.get('/', async ({ response }) => {
   return { hello: 'world' }
+})
+
+Route.post('/users', async ({ response }) => {
+  return response.created({ email: 'weiller@test.com', username: 'weiller', password: 'test' })
 })
