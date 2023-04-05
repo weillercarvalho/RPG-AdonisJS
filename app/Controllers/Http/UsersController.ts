@@ -8,8 +8,8 @@ export default class UsersController {
       return response.status(404)
     }
     try {
-      await User.create(body)
-      return response.status(201)
+      const test = await User.create(body)
+      return test
     } catch (error) {
       return response.status(500)
     }
