@@ -7,6 +7,10 @@ export default class UsersController {
     if (!email || !username || !password) {
       return response.status(404)
     }
+    const getEmail = await User.findBy('email', email)
+    if (getEmail) {
+      return response.status(409)
+    }
     try {
       const test = await User.create(body)
       return test

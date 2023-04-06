@@ -1,12 +1,13 @@
 import { test } from '@japa/runner'
 import supertest from 'supertest'
 import { CleanDb } from '../helpers'
+import { UserFactory } from 'Database/factories'
 const BASE_URL = `http://localhost:3333`
 //Resolve the problem of connection cant recognize the 3333 passed through process.env.PORT.
-CleanDb()
 
 test.group('User', () => {
   test('it should create an user', async ({ assert }) => {
+    await CleanDb()
     const userData = {
       email: 'weiller@test.com',
       username: 'weiller',
@@ -21,7 +22,9 @@ test.group('User', () => {
     assert.notExists(body.password, 'Password defined')
     assert.equal(body.avatar, userData.avatar)
   })
+
   test('it should return status 404 if email/username/password is empty', async ({ assert }) => {
+    await CleanDb()
     const userData = {
       username: 'weiller',
       password: 'test',
@@ -30,5 +33,16 @@ test.group('User', () => {
     const { status } = await supertest(BASE_URL).post('/api/users').send(userData)
     assert.equal(status, 404)
   })
-  test('')
+  test('it should return 409 when email is already in use', async () => {
+    await CleanDb()
+    const { email } = await UserFactory.create()
+    await supertest(BASE_URL)
+      .post('/api/users')
+      .send({
+        username: 'test',
+        email,
+        password: 'test',
+      })
+      .expect(409)
+  })
 })
