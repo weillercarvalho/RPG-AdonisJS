@@ -2,7 +2,6 @@ import { test } from '@japa/runner'
 import supertest from 'supertest'
 import { CleanDb } from '../helpers'
 import { UserFactory } from 'Database/factories'
-import Database from '@ioc:Adonis/Lucid/Database'
 const BASE_URL = `http://localhost:3333`
 //Resolve the problem of connection cant recognize the 3333 passed through process.env.PORT.
 //Problem with BeforeEach to use BeginTransactions
