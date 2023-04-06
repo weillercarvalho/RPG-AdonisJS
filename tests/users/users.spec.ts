@@ -18,7 +18,7 @@ test.group('User', () => {
     assert.exists(body.id, 'Id undefined')
     assert.equal(body.email, userData.email)
     assert.equal(body.username, userData.username)
-    assert.equal(body.password, userData.password)
+    assert.notExists(body.password, 'Password defined')
     assert.equal(body.avatar, userData.avatar)
   })
   test('it should return status 404 if email/username/password is empty', async ({ assert }) => {
@@ -29,5 +29,6 @@ test.group('User', () => {
     }
     const { status } = await supertest(BASE_URL).post('/api/users').send(userData)
     assert.equal(status, 404)
-  }).pin()
+  })
+  test('')
 })
