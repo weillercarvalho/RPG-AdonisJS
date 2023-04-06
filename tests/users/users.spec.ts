@@ -2,10 +2,11 @@ import { test } from '@japa/runner'
 import supertest from 'supertest'
 import { CleanDb } from '../helpers'
 import { UserFactory } from 'Database/factories'
+import Database from '@ioc:Adonis/Lucid/Database'
 const BASE_URL = `http://localhost:3333`
 //Resolve the problem of connection cant recognize the 3333 passed through process.env.PORT.
 
-test.group('User', () => {
+test.group('User', (group) => {
   test('it should create an user', async ({ assert }) => {
     await CleanDb()
     const userData = {
@@ -33,16 +34,14 @@ test.group('User', () => {
     const { status } = await supertest(BASE_URL).post('/api/users').send(userData)
     assert.equal(status, 404)
   })
-  test('it should return 409 when email is already in use', async () => {
+  test('it should return 409 when email is already in use', async ({ assert }) => {
     await CleanDb()
     const { email } = await UserFactory.create()
-    await supertest(BASE_URL)
-      .post('/api/users')
-      .send({
-        username: 'test',
-        email,
-        password: 'test',
-      })
-      .expect(409)
+    const { status } = await supertest(BASE_URL).post('/api/users').send({
+      username: 'test',
+      email,
+      password: 'test',
+    })
+    assert.equal(status, 409)
   })
 })
