@@ -34,6 +34,17 @@ test.group('User', (group) => {
     const { status } = await supertest(BASE_URL).post('/api/users').send(userData)
     assert.equal(status, 404)
   })
+  test('it should return status 404 if email/username/password is empty', async ({ assert }) => {
+    await CleanDb()
+    const userData = {
+      email: 'weiller@test.com',
+      username: 123,
+      password: 'test',
+      avatar: 'https://i.pinimg.com/originals/df/91/02/df91027b7859de1d4e5d2684604737d5.jpg',
+    }
+    const { status } = await supertest(BASE_URL).post('/api/users').send(userData)
+    assert.equal(status, 422)
+  })
   test('it should return 409 when email is already in use', async ({ assert }) => {
     await CleanDb()
     const { email } = await UserFactory.create()
