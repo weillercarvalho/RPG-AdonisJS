@@ -6,7 +6,7 @@ const BASE_URL = `http://localhost:3333`
 //Resolve the problem of connection cant recognize the 3333 passed through process.env.PORT.
 //Problem with BeforeEach to use BeginTransactions
 
-test.group('User', (group) => {
+test.group('User', () => {
   test('it should create an user', async ({ assert }) => {
     await CleanDb()
     const userData = {
