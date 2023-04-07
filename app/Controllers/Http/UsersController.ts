@@ -1,14 +1,22 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import BadRequest from 'App/Exceptions/BadRequestException'
 import NotFound from 'App/Exceptions/NotFoundException'
+import Unauthorized from 'App/Exceptions/UnauthorizedException'
 import Unprocess from 'App/Exceptions/UnprocessException'
 import User from 'App/Models/User'
 export default class UsersController {
   public async store({ request, response }: HttpContextContract) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     const body = request.body()
     const { email, username, password } = body
     if (!email || !username || !password) {
       throw new NotFound('Not found', 404)
+    }
+    if (password.length < 4 || username.length < 3) {
+      throw new Unauthorized('Password/Username too short', 401)
+    }
+    if (!emailRegex.test(email)) {
+      throw new Unauthorized('Invalid email format', 401)
     }
     if (!isNaN(email) || !isNaN(username) || !isNaN(password)) {
       throw new Unprocess('Invalid Format', 422)
