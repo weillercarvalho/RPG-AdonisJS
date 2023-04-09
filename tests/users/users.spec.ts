@@ -80,7 +80,6 @@ test.group('User', () => {
   test('it should return 200 when email is already in use', async ({ assert }) => {
     await CleanDb()
     const creation = await UserFactory.create()
-    console.log(creation)
     const { status } = await supertest(BASE_URL).put(`/api/users/${creation.id}`).send({
       username: 'test',
       email: 'test@test.com',
