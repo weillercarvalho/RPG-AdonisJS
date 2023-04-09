@@ -32,4 +32,18 @@ export default class UsersController {
       return response.status(500)
     }
   }
+  public async update({ request, response, params }: HttpContextContract) {
+    const body = request.body()
+    if (!body) {
+      throw new NotFound('Not found', 404)
+    }
+    try {
+      const updateUser = await User.findOrFail(params.id)
+      updateUser.merge(body)
+      await updateUser.save()
+      return response.status(200)
+    } catch (error) {
+      return response.status(500)
+    }
+  }
 }
