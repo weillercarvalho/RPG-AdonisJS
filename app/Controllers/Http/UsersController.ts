@@ -3,6 +3,7 @@ import BadRequest from 'App/Exceptions/BadRequestException'
 import NotFound from 'App/Exceptions/NotFoundException'
 import Unauthorized from 'App/Exceptions/UnauthorizedException'
 import Unprocess from 'App/Exceptions/UnprocessException'
+import Conflict from 'App/Exceptions/ConflictException'
 import User from 'App/Models/User'
 export default class UsersController {
   public async store({ request, response }: HttpContextContract) {
@@ -23,7 +24,7 @@ export default class UsersController {
     }
     const getEmail = await User.findBy('email', email)
     if (getEmail) {
-      throw new BadRequest('Email already used', 409)
+      throw new Conflict('Email already used', 409)
     }
     try {
       const test = await User.create(body)
@@ -34,11 +35,16 @@ export default class UsersController {
   }
   public async update({ request, response, params }: HttpContextContract) {
     const body = request.body()
-    if (!body) {
+    const { id } = params
+    const { email, username, password } = body
+    if (!email && !username && !password) {
       throw new NotFound('Not found', 404)
     }
+    if (isNaN(parseInt(id))) {
+      throw new NotFound('Bad Request', 400)
+    }
     try {
-      const updateUser = await User.findOrFail(params.id)
+      const updateUser = await User.findOrFail(id)
       updateUser.merge(body)
       await updateUser.save()
       return response.status(200)
